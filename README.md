@@ -1,1 +1,3 @@
-# calcualtor_ISA_datapath
+# vhdl_components
+
+### Authors: Colby Banbury and Matt Stout
