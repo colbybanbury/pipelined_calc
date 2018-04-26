@@ -40,7 +40,7 @@ begin
 
 	process(hold, dest) is --if hold is zero none of the registers update, otherwise dest decides
 	begin
-		if (hold = '0') then
+		if (hold = '1') then
 			slct0 <= "00"; 
 			slct1 <= "00";
 			slct2 <= "00";
@@ -102,7 +102,7 @@ register3: shift_reg_8bit port map(
 	O => o3
 	);
 
-process(reg1) is --change the data1 based on reg1
+	process (o0, o1, o2, o3) is --change the data1 based on reg1
 	begin
 		if (reg1 = "00") then
 			data1 <= o0;
@@ -113,10 +113,6 @@ process(reg1) is --change the data1 based on reg1
 		else
 			data1 <= o3;
 		end if;
-	end process;
-
-process(reg2) is --change the data2 based on reg2
-	begin
 		if (reg2 = "00") then
 			data2 <= o0;
 		elsif (reg2 = "01") then
