@@ -42,22 +42,27 @@ begin
 		type pattern_type is record
 		--inputs
 			REG1, REG2, DEST : std_logic_vector(1 downto 0);
-			CLK, HOLD : std_logic;
 			WRITEDATA: std_logic_vector(7 downto 0);
+			CLK, HOLD : std_logic;
 		--outputs
 			DATA1, DATA2 : std_logic_vector(7 downto 0);
 		end record;
 
 		type pattern_array is array (natural range <>) of pattern_type;
 		constant patterns : pattern_array :=
-		(	--reg1,reg2,dest,  clk, hold, writedata,   data1,    data2 
-			("00", "00", "00", '0', '0', "00000001", "UUUUUUUU", "UUUUUUUU"),--nothing
-			("00", "00", "00", '1', '1', "00000001", "UUUUUUUU", "UUUUUUUU"),--hold
-			("00", "00", "00", '0', '0', "00000001", "UUUUUUUU", "UUUUUUUU"),--clk 0
-			("00", "00", "00", '1', '0', "00000001", "UUUUUUUU", "UUUUUUUU"),--load in to reg0
-			("00", "00", "00", '0', '0', "00000001", "UUUUUUUU", "UUUUUUUU"),--clk 0
-			("00", "00", "00", '1', '0', "00000001", "00000001", "00000001") --clk1 should read reg1
-
+		(	--reg1,reg2, dest, writedata,  clk,hold,   data1,    data2 
+			("00", "00", "00", "00000010", '0', '0', "UUUUUUUU", "UUUUUUUU"),--1ns
+			("00", "00", "00", "00000001", '0', '1', "UUUUUUUU", "UUUUUUUU"),--hold
+			("00", "00", "00", "00000001", '1', '1', "UUUUUUUU", "UUUUUUUU"),--hold
+			("00", "00", "00", "00000100", '0', '0', "UUUUUUUU", "UUUUUUUU"),--clk 0
+			("00", "00", "10", "00000001", '1', '1', "00000100", "00000100"),--5ns
+			("00", "00", "00", "00000001", '0', '0', "00000100", "00000100"), --clk0 should read reg1 and sets reg0
+			("00", "00", "00", "00000001", '1', '1', "00000001", "00000001"), --clk1 should read reg1
+			("00", "00", "00", "00000001", '0', '1', "00000001", "00000001"),--hold
+			("00", "01", "01", "00010000", '1', '1', "00000001", "UUUUUUUU"),
+			("00", "01", "01", "00010000", '0', '0', "00000001", "UUUUUUUU"),-- 10ns
+			("00", "01", "10", "00000001", '1', '1', "00000001", "00010000"),
+			("01", "10", "00", "00000001", '0', '1', "00010000", "UUUUUUUU")
 
 			);
 	begin
