@@ -40,31 +40,20 @@ begin
 
 	process(hold, dest) is --if hold is zero none of the registers update, otherwise dest decides
 	begin
-		if (hold = '1') then
+
 			slct0 <= "00"; 
 			slct1 <= "00";
 			slct2 <= "00";
 			slct3 <= "00";
-		elsif (dest = "00") then
-			slct0 <= "11";
-			slct1 <= "00";
-			slct2 <= "00";
-			slct3 <= "00";
-		elsif (dest = "01") then
-			slct0 <= "00";
-			slct1 <= "11";
-			slct2 <= "00";
-			slct3 <= "00";
-		elsif (dest = "10") then
-			slct0 <= "00";
-			slct1 <= "00";
-			slct2 <= "11";
-			slct3 <= "00";
-		else
-			slct0 <= "00";
-			slct1 <= "00";
-			slct2 <= "00";
-			slct3 <= "11";
+
+		if (hold = '0') then
+			case dest is
+				when "00"	=> slct0 <= "11";
+				when "01"	=> slct1 <= "11";
+				when "10"	=> slct2 <= "11";
+				when "11"	=> slct3 <= "11";
+				when others => slct0 <= "11";
+			end case;
 		end if;
 	end process;
 
@@ -102,26 +91,26 @@ register3: shift_reg_8bit port map(
 	O => o3
 	);
 
-	process (o0, o1, o2, o3) is --change the data1 based on reg1
+	process (o0, o1, o2, o3, reg1) is --change the data1 based on reg1
 	begin
-		if (reg1 = "00") then
-			data1 <= o0;
-		elsif (reg1 = "01") then
-			data1 <= o1;
-		elsif (reg1 = "10") then
-			data1 <= o2;
-		else
-			data1 <= o3;
-		end if;
-		if (reg2 = "00") then
-			data2 <= o0;
-		elsif (reg2 = "01") then
-			data2 <= o1;
-		elsif (reg2 = "10") then
-			data2 <= o2;
-		else
-			data2 <= o3;
-		end if;
+		case reg1 is
+			when "00"	=> data1 <= o0;
+			when "01"	=> data1 <= o1;
+			when "10"	=> data1 <= o2;
+			when "11"	=> data1 <= o3;
+			when others => data1 <= o0;
+		end case;
+	end process;
+
+	process (o0, o1, o2, o3, reg2) is --change the data2 based on reg1
+	begin
+		case reg2 is
+			when "00"	=> data2 <= o0;
+			when "01"	=> data2 <= o1;
+			when "10"	=> data2 <= o2;
+			when "11"	=> data2 <= o3;
+			when others => data2 <= o0;
+		end case;
 	end process;
 
 end architecture regs;
