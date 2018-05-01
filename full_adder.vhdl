@@ -18,8 +18,14 @@ end entity full_adder;
 
 architecture behav of full_adder is
 
+signal t0, t1, t2: std_logic;
+
 begin
-	sum <= a xor b xor cin;
-	cout <= (a and b) or (cin and a) or (cin and b);
+
+	t0 <= a xor b;
+	t1 <= t0 and cin;
+	t2 <= a and b;
+	sum <= t0 xor cin;
+	cout <= t1 or t2;
 
 end behav;

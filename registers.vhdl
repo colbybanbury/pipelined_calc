@@ -34,7 +34,7 @@ architecture regs of registers is
   end component;
 
 	signal slct0, slct1, slct2, slct3	:	std_logic_vector(1 downto 0);
-	signal o0, o1, o2, o3	: std_logic_vector(7 downto 0);
+	signal o0, o1, o2, o3, checkout1, checkout2	: std_logic_vector(7 downto 0);
 
 begin
 
@@ -91,26 +91,44 @@ register3: shift_reg_8bit port map(
 	O => o3
 	);
 
-	process (o0, o1, o2, o3, reg1) is --change the data1 based on reg1
+	process (o0, o1, o2, o3, reg1) is --change the checkout1 based on reg1
 	begin
 		case reg1 is
-			when "00"	=> data1 <= o0;
-			when "01"	=> data1 <= o1;
-			when "10"	=> data1 <= o2;
-			when "11"	=> data1 <= o3;
-			when others => data1 <= o0;
+			when "00"	=> checkout1 <= o0;
+			when "01"	=> checkout1 <= o1;
+			when "10"	=> checkout1 <= o2;
+			when "11"	=> checkout1 <= o3;
+			when others => checkout1 <= o0;
 		end case;
 	end process;
 
-	process (o0, o1, o2, o3, reg2) is --change the data2 based on reg1
+	process (o0, o1, o2, o3, reg2) is --change the checkout2 based on reg1
 	begin
 		case reg2 is
-			when "00"	=> data2 <= o0;
-			when "01"	=> data2 <= o1;
-			when "10"	=> data2 <= o2;
-			when "11"	=> data2 <= o3;
-			when others => data2 <= o0;
+			when "00"	=> checkout2 <= o0;
+			when "01"	=> checkout2 <= o1;
+			when "10"	=> checkout2 <= o2;
+			when "11"	=> checkout2 <= o3;
+			when others => checkout2 <= o0;
 		end case;
 	end process;
 
+	process(checkout1) is
+	begin
+		if(checkout1 = "UUUUUUUU") then
+			data1 <= "00000000";
+		else
+			data1 <= checkout1;
+		end if;
+	end process;
+
+	process(checkout2) is
+	begin
+		if (checkout2 = "UUUUUUUU") then
+			data2 <= "00000000";
+		else
+			data2 <= checkout2;
+		end if;
+	end process;
+	
 end architecture regs;
