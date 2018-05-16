@@ -24,8 +24,8 @@ begin
 	process(clk) is
 	begin
 		if rising_edge(clk) then
-			if(disp = '0') then
-				report "0000";
+			if(disp = '0' or data = "UUUUUUUU") then
+				report "nop";
 			else
 				report "value: " & integer'image(to_integer(signed(data))) severity note;
 			end if;

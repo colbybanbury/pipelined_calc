@@ -16,11 +16,16 @@ entity dff is
 end entity dff;
 
 architecture Behavioral of dff is
+
+signal reg_val : std_logic;
+
 begin
   process (clk) is
   begin
     if rising_edge(clk) and (en = '1') then
-      q <= d;
+      reg_val <= d;
+    elsif falling_edge(clk) then
+      q <= reg_val;
     end if;
   end process;
 end architecture Behavioral;
