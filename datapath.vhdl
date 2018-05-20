@@ -66,13 +66,13 @@ architecture behav of datapath is
 		);
 	end component;
 
-	signal sign_extend_out, sign_extend_out_exe, sign_extend_out_wb, write_data_in, reg_data_1, reg_data_2, adder_8bit_out, adder_8bit_a, adder_8bit_b, display_value_wb, display_value : std_logic_vector(7 downto 0) := "00000000";
+	signal sign_extend_out, sign_extend_out_exe, sign_extend_out_wb, write_data_in, reg_data_1, reg_data_2, adder_8bit_out, adder_8bit_out_beq, adder_8bit_a, adder_8bit_b, display_value_wb, display_value : std_logic_vector(7 downto 0) := "00000000";
 	signal hold_reg_out, hold_reg_in: std_logic_vector(3 downto 0) := "0000";
 	signal reg_decr: std_logic_vector(1 downto 0) := "11";
 	signal dest_reg_exe, dest_reg_wb, reg1_exe, reg2_exe: std_logic_vector(1 downto 0) := "00";
 	signal Hold, Disp, sub_id, sub_in : std_logic := '0';
 	signal instruc_exe, instruc_wb : std_logic_vector(1 downto 0) := "00";
-	signal b_or_d_exe, b_or_d_wb, jump_exe : std_logic := '0';
+	signal b_or_d_exe, b_or_d_wb, jump_exe, jump_wb : std_logic := '0';
 
 begin 
 
@@ -124,6 +124,7 @@ begin
 			sign_extend_out_wb <= sign_extend_out_exe;
 			sign_extend_out_exe <= sign_extend_out;
 
+			jump_wb <= jump_exe;
 			jump_exe <= I(4);
 
 			instruc_wb <= instruc_exe;
@@ -138,6 +139,8 @@ begin
 			b_or_d_wb <= b_or_d_exe;
 			b_or_d_exe <= I(5);
 			
+			adder_8bit_out_beq <= adder_8bit_out;
+
 		end if;
 	end process;
 
@@ -214,15 +217,15 @@ begin
 		end if;
 	end process;
 
-	process(instruc_exe, b_or_d_exe, adder_8bit_out, jump_exe, hold_reg_out) is
+	process(instruc_wb, b_or_d_wb, adder_8bit_out_beq, jump_wb, hold_reg_out) is
 	begin
-			if(instruc_exe = "01" and b_or_d_exe = '0' and adder_8bit_out = "00000000" and hold_reg_out = "0000") then--beq?
-				if(jump_exe = '1') then--jump 2
+			if(instruc_wb = "01" and b_or_d_wb = '0' and adder_8bit_out_beq = "00000000" and hold_reg_out = "0000") then--beq?
+				if(jump_wb = '1') then--jump 2
 					hold_reg_in <= "0010";
 				else
 					hold_reg_in <= "0001";
 				end if;
-			elsif hold_reg_in = "UUUU" then
+			else
 				hold_reg_in <= "0000";
 			end if;
 	end process;
